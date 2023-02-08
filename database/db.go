@@ -38,8 +38,8 @@ func Connect() (Db, error) {
 }
 
 func (db Db) GetUserCollection() *mongo.Collection {
-	userColention := db.client.Database("toplearn-api-golang").Collection("users")
+	userColection := db.client.Database("toplearn-api-golang").Collection("users")
 
-	return userColention
+	return userColection
 
 }

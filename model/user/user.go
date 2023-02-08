@@ -1,8 +1,13 @@
 package user
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type User struct {
-	FirstName   string `query:"name" json:"firstName"`
-	LastName    string `query:"family" json:"lastName"`
-	Age         int    `query:"age"`
-	PhoneNumber string `query:"phone" json:"mobile"`
+	Id          primitive.ObjectID
+	FirstName   string
+	LastName    string
+	Age         int
+	PhoneNumber string
+
+	//PhoneNumber string `query:"phone" json:"mobile"`
 }

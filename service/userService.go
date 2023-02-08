@@ -1,6 +1,9 @@
 package service
 
-import "toplearn-api/model/user"
+import (
+	"toplearn-api/model/user"
+	"toplearn-api/repository"
+)
 
 type UserService interface {
 	GetUserList() ([]user.User, error)
@@ -14,19 +17,9 @@ func NewUserService() UserService {
 }
 
 func (userService) GetUserList() ([]user.User, error) {
-	return []user.User{
-		{
-			FirstName:   "Mohammad",
-			LastName:    "Javadi",
-			Age:         22,
-			PhoneNumber: "091212345667",
-		},
-		{
-			FirstName:   "Kazem",
-			LastName:    "jodi",
-			Age:         51,
-			PhoneNumber: "0911454545987",
-		},
-	}, nil
+	userRepository := repository.NewUserRepository()
+	userList, err := userRepository.GetUserList()
+
+	return userList, err
 
 }
