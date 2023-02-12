@@ -13,6 +13,7 @@ type UserRepository interface {
 	GetUserList() ([]user.User, error)
 	GetUserById(id string) (user.User, error)
 	InsertUser(user user.User) (string, error)
+	UpdateUserById(user user.User) error
 }
 
 type userRepository struct {
@@ -79,4 +80,24 @@ func (userRepository userRepository) InsertUser(user user.User) (string, error) 
 	objectId := result.InsertedID.(primitive.ObjectID).Hex()
 
 	return objectId, err
+}
+
+func (userRepository userRepository) UpdateUserById(user user.User) error {
+
+	objectId, err := primitive.ObjectIDFromHex(user.Id)
+	if err != nil {
+		return err
+	}
+	// because we don't want the id in body of update , it's not editable
+	user.Id = ""
+
+	userCollection := userRepository.db.GetUserCollection()
+
+	_, err = userCollection.UpdateByID(context.TODO(), bson.D{{"_id", objectId}}, bson.D{{"&set", user}})
+
+	if err != nil {
+		return err
+	}
+
+	return err
 }

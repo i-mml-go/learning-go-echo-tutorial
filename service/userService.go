@@ -18,7 +18,9 @@ func NewUserService() UserService {
 
 func (userService) GetUserList() ([]user.User, error) {
 	userRepository := repository.NewUserRepository()
+
 	userList, err := userRepository.GetUserList()
+
 	id, err := userRepository.InsertUser(user.User{
 		Id:          "",
 		FirstName:   "kazem",
@@ -27,6 +29,14 @@ func (userService) GetUserList() ([]user.User, error) {
 		PhoneNumber: "09121234152",
 	})
 	println(id)
+
+	err = userRepository.UpdateUserById(user.User{
+		Id:        "63df8a8d329f4660805f4138",
+		FirstName: "Laura (new)",
+		LastName:  "Karely (new)",
+	})
+
+	println("this is update error", err)
 
 	//user, err := userRepository.GetUserById("63df8a55329f4660805f4133")
 	//fmt.Println("this is new user log", user)
