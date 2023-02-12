@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"toplearn-api/model/user"
 	"toplearn-api/repository"
 )
@@ -20,6 +21,8 @@ func (userService) GetUserList() ([]user.User, error) {
 	userRepository := repository.NewUserRepository()
 	userList, err := userRepository.GetUserList()
 
+	user, err := userRepository.GetUserById("63df8a55329f4660805f4133")
+	fmt.Println("this is new user log", user)
 	return userList, err
 
 }
