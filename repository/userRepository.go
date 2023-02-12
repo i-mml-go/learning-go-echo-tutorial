@@ -12,6 +12,7 @@ import (
 type UserRepository interface {
 	GetUserList() ([]user.User, error)
 	GetUserById(id string) (user.User, error)
+	InsertUser(user user.User) (string, error)
 }
 
 type userRepository struct {
@@ -54,11 +55,11 @@ func (userRepository userRepository) GetUserById(id string) (user.User, error) {
 		return user.User{}, err
 	}
 
-	userColection := userRepository.db.GetUserCollection()
+	userCollection := userRepository.db.GetUserCollection()
 
 	var userObject user.User
 
-	err = userColection.FindOne(context.TODO(), bson.D{{"_id", objectId}}).Decode(&userObject)
+	err = userCollection.FindOne(context.TODO(), bson.D{{"_id", objectId}}).Decode(&userObject)
 
 	if err != nil {
 		return user.User{}, err
@@ -66,4 +67,16 @@ func (userRepository userRepository) GetUserById(id string) (user.User, error) {
 
 	return userObject, nil
 
+}
+
+func (userRepository userRepository) InsertUser(user user.User) (string, error) {
+	userCollection := userRepository.db.GetUserCollection()
+	result, err := userCollection.InsertOne(context.TODO(), user)
+	if err != nil {
+		return "", err
+	}
+
+	objectId := result.InsertedID.(primitive.ObjectID).Hex()
+
+	return objectId, err
 }
