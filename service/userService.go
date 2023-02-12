@@ -28,7 +28,7 @@ func (userService) GetUserList() ([]user.User, error) {
 		Age:         44,
 		PhoneNumber: "09121234152",
 	})
-	println(id)
+	println("this is insert error", id)
 
 	err = userRepository.UpdateUserById(user.User{
 		Id:        "63df8a8d329f4660805f4138",
@@ -37,6 +37,9 @@ func (userService) GetUserList() ([]user.User, error) {
 	})
 
 	println("this is update error", err)
+
+	err = userRepository.DeleteUserById("63df8a55329f4660805f4133")
+	println("this is delete error", err)
 
 	//user, err := userRepository.GetUserById("63df8a55329f4660805f4133")
 	//fmt.Println("this is new user log", user)

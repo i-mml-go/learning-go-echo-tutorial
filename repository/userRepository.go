@@ -14,6 +14,7 @@ type UserRepository interface {
 	GetUserById(id string) (user.User, error)
 	InsertUser(user user.User) (string, error)
 	UpdateUserById(user user.User) error
+	DeleteUserById(id string) error
 }
 
 type userRepository struct {
@@ -94,6 +95,24 @@ func (userRepository userRepository) UpdateUserById(user user.User) error {
 	userCollection := userRepository.db.GetUserCollection()
 
 	_, err = userCollection.UpdateByID(context.TODO(), bson.D{{"_id", objectId}}, bson.D{{"&set", user}})
+
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (userRepository userRepository) DeleteUserById(id string) error {
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	userCollection := userRepository.db.GetUserCollection()
+
+	_, err = userCollection.DeleteOne(context.TODO(), bson.D{{"_id", objectId}})
 
 	if err != nil {
 		return err
