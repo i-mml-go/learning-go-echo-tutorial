@@ -1,12 +1,15 @@
 package service
 
 import (
+	"time"
 	"toplearn-api/model/user"
 	"toplearn-api/repository"
+	"toplearn-api/viewModel/userVm"
 )
 
 type UserService interface {
 	GetUserList() ([]user.User, error)
+	CreateNewUser(userInput userVm.CreateNewUserViewModel) (string, error)
 }
 
 type userService struct {
@@ -18,32 +21,24 @@ func NewUserService() UserService {
 
 func (userService) GetUserList() ([]user.User, error) {
 	userRepository := repository.NewUserRepository()
-
 	userList, err := userRepository.GetUserList()
 
-	id, err := userRepository.InsertUser(user.User{
-		Id:          "",
-		FirstName:   "kazem",
-		LastName:    "ghiyasi",
-		Age:         44,
-		PhoneNumber: "09121234152",
-	})
-	println("this is insert error", id)
-
-	err = userRepository.UpdateUserById(user.User{
-		Id:        "63df8a8d329f4660805f4138",
-		FirstName: "Laura (new)",
-		LastName:  "Karely (new)",
-	})
-
-	println("this is update error", err)
-
-	err = userRepository.DeleteUserById("63df8a55329f4660805f4133")
-	println("this is delete error", err)
-
-	//user, err := userRepository.GetUserById("63df8a55329f4660805f4133")
-	//fmt.Println("this is new user log", user)
-
 	return userList, err
+}
 
+func (userService) CreateNewUser(userInput userVm.CreateNewUserViewModel) (string, error) {
+
+	userEntity := user.User{
+		FirstName:    userInput.FirstName,
+		LastName:     userInput.LastName,
+		Email:        userInput.Email,
+		UserName:     userInput.UserName,
+		Password:     userInput.Password,
+		RegisterData: time.Now(),
+	}
+
+	userRepository := repository.NewUserRepository()
+	userId, err := userRepository.InsertUser(userEntity)
+
+	return userId, err
 }

@@ -1,12 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"toplearn-api/config"
-	"toplearn-api/database"
 	"toplearn-api/routing"
 
 	"github.com/labstack/echo/v4"
@@ -21,22 +18,7 @@ func main() {
 	// start server
 	// get config
 
-	db, err := database.Connect()
-	if err != nil {
-		log.Fatalln(err)
-	} else {
-		userCollection := db.GetUserCollection()
-
-		var result bson.M
-		err1 := userCollection.FindOne(context.TODO(), bson.D{{"firstName", "Laura"}}).Decode(&result)
-		if err1 != nil {
-			log.Fatalln(err1)
-		}
-
-		fmt.Println(result)
-	}
-
-	err = config.GetConfig()
+	err := config.GetConfig()
 	if err != nil {
 		log.Fatalln(err)
 	}

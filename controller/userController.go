@@ -2,11 +2,11 @@ package controller
 
 import (
 	"fmt"
+	"github.com/labstack/echo/v4"
 	"net/http"
 	"toplearn-api/model/user"
 	"toplearn-api/service"
-
-	"github.com/labstack/echo/v4"
+	"toplearn-api/viewModel/userVm"
 )
 
 func GetUserAvatar(c echo.Context) error {
@@ -38,14 +38,24 @@ func GetListOfUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, userList)
 }
 
-func CreateUser(c echo.Context) error {
-	userInput := new(user.User)
+func CreateNewUser(c echo.Context) error {
+	newUser := new(userVm.CreateNewUserViewModel)
 
-	err := c.Bind(userInput)
-	if err != nil {
-		return err
+	if err := c.Bind(newUser); err != nil {
+		c.JSON(http.StatusBadRequest, "")
 	}
-	fmt.Println(userInput)
 
-	return c.String(http.StatusOK, "what the fuck are you talking about")
+	userService := service.NewUserService()
+	newUserId, err := userService.CreateNewUser(*newUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	userResData := struct {
+		NewUserId string
+	}{
+		NewUserId: newUserId,
+	}
+
+	return c.JSON(http.StatusOK, userResData)
 }

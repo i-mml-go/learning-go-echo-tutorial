@@ -19,7 +19,7 @@ func SetRouting(e *echo.Echo) error {
 
 	g.GET("/get", controller.GetListOfUser)
 
-	g.POST("/create", controller.CreateUser)
+	g.POST("/createNewUser", controller.CreateNewUser)
 
 	return nil
 }
