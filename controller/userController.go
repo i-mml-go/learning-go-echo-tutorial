@@ -42,7 +42,11 @@ func CreateNewUser(c echo.Context) error {
 	newUser := new(userVm.CreateNewUserViewModel)
 
 	if err := c.Bind(newUser); err != nil {
-		c.JSON(http.StatusBadRequest, "")
+		return c.JSON(http.StatusBadRequest, "")
+	}
+
+	if err := c.Validate(newUser); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
 	}
 
 	userService := service.NewUserService()

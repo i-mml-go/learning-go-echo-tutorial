@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4"
 	"log"
+	"toplearn-api/Utility"
 	"toplearn-api/config"
 	"toplearn-api/routing"
-
-	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -26,6 +27,8 @@ func main() {
 
 	// init server
 	server := echo.New()
+
+	server.Validator = &Utility.CustomValidator{Validator: validator.New()}
 
 	// routing
 	routing.SetRouting(server)
