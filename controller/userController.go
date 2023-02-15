@@ -63,3 +63,23 @@ func CreateNewUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, userResData)
 }
+
+func LoginUser(c echo.Context) error {
+	loginModel := new(userVm.LoginUserViewModel)
+
+	if err := c.Bind(loginModel); err != nil {
+		return c.JSON(http.StatusBadRequest, "")
+	}
+
+	if err := c.Validate(loginModel); err != nil {
+		return c.JSON(http.StatusBadRequest, "Model not Valid")
+	}
+
+	loginResData := struct {
+		Message string
+	}{
+		Message: "Welcome to our App",
+	}
+
+	return c.JSON(http.StatusOK, loginResData)
+}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"log"
 	"toplearn-api/Utility"
 	"toplearn-api/config"
@@ -42,9 +43,7 @@ func main() {
 	routing.SetRouting(server)
 
 	// middleware
-	// must be written without ()
-	server.Pre(RootLevel)
-	server.Use(AfterRooter)
+	server.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
 
 	// start server
 	server.Start(":" + config.AppConfig.Server.Port)
