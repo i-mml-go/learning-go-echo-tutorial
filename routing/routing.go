@@ -1,25 +1,35 @@
 package routing
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"toplearn-api/controller"
 )
 
+func GroupLevel(next echo.HandlerFunc) echo.HandlerFunc {
+	// this middleware is for group routing
+	fmt.Println("i am groupLevel")
+	return next
+}
+
+func RouteLevel(next echo.HandlerFunc) echo.HandlerFunc {
+	// this middleware is for group routing
+	fmt.Println("i am routeLevel")
+	return next
+}
+func RouteLevel2(next echo.HandlerFunc) echo.HandlerFunc {
+	// this middleware is for group routing
+	fmt.Println("i am routeLevel 2")
+	return next
+}
+
 func SetRouting(e *echo.Echo) error {
 
-	g := e.Group("users")
+	g := e.Group("users", GroupLevel)
 
-	//// add Name to the route
-	//g.GET("/get/list", func(c echo.Context) error {
-	//	return c.String(http.StatusOK, "this is the list of our users")
-	//}).Name = "getUsersList"
-
-	// use a external function , instead inline function
-	g.GET("/get/:id/avatars", controller.GetUserAvatar)
-
-	g.GET("/get", controller.GetListOfUser)
-
+	g.GET("/get", controller.GetListOfUser, RouteLevel, RouteLevel2)
 	g.POST("/createNewUser", controller.CreateNewUser)
+	g.GET("/get/:id/avatars", controller.GetUserAvatar)
 
 	return nil
 }
