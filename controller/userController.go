@@ -2,10 +2,13 @@ package controller
 
 import (
 	"fmt"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"time"
 	"toplearn-api/model/user"
 	"toplearn-api/service"
+	"toplearn-api/viewModel/common/security"
 	"toplearn-api/viewModel/userVm"
 )
 
@@ -75,10 +78,26 @@ func LoginUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Model not Valid")
 	}
 
+	// TODO -> GetUser
+
+	claims := &security.JwtClaims{
+		loginModel.UserName,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	stringToken, err := token.SignedString([]byte("our-secret-key-in-golang-project"))
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
 	loginResData := struct {
-		Message string
+		Token string
 	}{
-		Message: "Welcome to our App",
+		Token: stringToken,
 	}
 
 	return c.JSON(http.StatusOK, loginResData)
