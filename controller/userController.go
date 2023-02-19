@@ -78,10 +78,16 @@ func LoginUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Model not Valid")
 	}
 
-	// TODO -> GetUser
+	userService := service.NewUserService()
+	user, err := userService.GetUserByUserNameAndPassword(*loginModel)
+
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "User not found")
+	}
 
 	claims := &security.JwtClaims{
-		loginModel.UserName,
+		user.UserName,
+		user.Id,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 		},

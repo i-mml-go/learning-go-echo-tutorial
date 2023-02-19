@@ -12,6 +12,7 @@ import (
 type UserRepository interface {
 	GetUserList() ([]user.User, error)
 	GetUserById(id string) (user.User, error)
+	GetUserByUserNameAndPassword(username, password string) (user.User, error)
 	InsertUser(user user.User) (string, error)
 	UpdateUserById(user user.User) error
 	DeleteUserById(id string) error
@@ -69,6 +70,19 @@ func (userRepository userRepository) GetUserById(id string) (user.User, error) {
 
 	return userObject, nil
 
+}
+
+func (userRepository userRepository) GetUserByUserNameAndPassword(username, password string) (user.User, error) {
+	userCollection := userRepository.db.GetUserCollection()
+
+	var userObject user.User
+	err := userCollection.FindOne(context.TODO(), bson.D{{"userName", username}, {"password", password}}).Decode(&userObject)
+
+	if err != nil {
+		return user.User{}, err
+	}
+
+	return userObject, nil
 }
 
 func (userRepository userRepository) InsertUser(user user.User) (string, error) {

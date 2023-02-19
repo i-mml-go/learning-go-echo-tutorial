@@ -10,6 +10,7 @@ import (
 type UserService interface {
 	GetUserList() ([]user.User, error)
 	CreateNewUser(userInput userVm.CreateNewUserViewModel) (string, error)
+	GetUserByUserNameAndPassword(loginViewModel userVm.LoginUserViewModel) (user.User, error)
 }
 
 type userService struct {
@@ -24,6 +25,13 @@ func (userService) GetUserList() ([]user.User, error) {
 	userList, err := userRepository.GetUserList()
 
 	return userList, err
+}
+
+func (userService) GetUserByUserNameAndPassword(loginViewModel userVm.LoginUserViewModel) (user.User, error) {
+	userRepository := repository.NewUserRepository()
+	user, err := userRepository.GetUserByUserNameAndPassword(loginViewModel.UserName, loginViewModel.Password)
+
+	return user, err
 }
 
 func (userService) CreateNewUser(userInput userVm.CreateNewUserViewModel) (string, error) {
