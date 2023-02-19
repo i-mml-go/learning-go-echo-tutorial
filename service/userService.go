@@ -37,12 +37,13 @@ func (userService) GetUserByUserNameAndPassword(loginViewModel userVm.LoginUserV
 func (userService) CreateNewUser(userInput userVm.CreateNewUserViewModel) (string, error) {
 
 	userEntity := user.User{
-		FirstName:    userInput.FirstName,
-		LastName:     userInput.LastName,
-		Email:        userInput.Email,
-		UserName:     userInput.UserName,
-		Password:     userInput.Password,
-		RegisterData: time.Now(),
+		FirstName:     userInput.FirstName,
+		LastName:      userInput.LastName,
+		Email:         userInput.Email,
+		UserName:      userInput.UserName,
+		Password:      userInput.Password,
+		RegisterData:  time.Now(),
+		CreatorUserId: userInput.CreatorUserName,
 	}
 
 	userRepository := repository.NewUserRepository()

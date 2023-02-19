@@ -52,6 +52,11 @@ func CreateNewUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
+	token := c.Get("user").(*jwt.Token)
+	claim := token.Claims.(*security.JwtClaims)
+
+	newUser.CreatorUserName = claim.UserName
+
 	userService := service.NewUserService()
 	newUserId, err := userService.CreateNewUser(*newUser)
 	if err != nil {
