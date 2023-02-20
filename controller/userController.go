@@ -55,7 +55,7 @@ func CreateNewUser(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claim := token.Claims.(*security.JwtClaims)
 
-	newUser.CreatorUserName = claim.UserName
+	newUser.CreatorUserName = claim.Id
 
 	userService := service.NewUserService()
 	newUserId, err := userService.CreateNewUser(*newUser)
