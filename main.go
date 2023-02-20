@@ -43,7 +43,13 @@ func main() {
 	routing.SetRouting(server)
 
 	// middleware
-	server.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
+	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			apiContext := &Utility.ApiContext{Context: c}
+			return next(apiContext)
+		}
+	})
+	server.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(10)))
 
 	// start server
 	server.Start(":" + config.AppConfig.Server.Port)

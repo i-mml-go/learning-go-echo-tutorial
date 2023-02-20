@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"time"
+	"toplearn-api/Utility"
 	"toplearn-api/model/user"
 	"toplearn-api/service"
 	"toplearn-api/viewModel/common/security"
@@ -42,6 +43,8 @@ func GetListOfUser(c echo.Context) error {
 }
 
 func CreateNewUser(c echo.Context) error {
+	apiContext := c.(*Utility.ApiContext)
+
 	newUser := new(userVm.CreateNewUserViewModel)
 
 	if err := c.Bind(newUser); err != nil {
@@ -52,10 +55,12 @@ func CreateNewUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	token := c.Get("user").(*jwt.Token)
-	claim := token.Claims.(*security.JwtClaims)
+	creator, err := apiContext.GetUserId()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
-	newUser.CreatorUserName = claim.Id
+	newUser.CreatorUserName = creator
 
 	userService := service.NewUserService()
 	newUserId, err := userService.CreateNewUser(*newUser)
