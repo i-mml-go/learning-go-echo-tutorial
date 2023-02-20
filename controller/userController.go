@@ -22,6 +22,9 @@ func GetUserAvatar(c echo.Context) error {
 // the structure of incoming fields
 
 func GetListOfUser(c echo.Context) error {
+	apiContext := c.(*Utility.ApiContext)
+	fmt.Println(apiContext.GetUserId())
+
 	userService := service.NewUserService()
 
 	userList, errList := userService.GetUserList()

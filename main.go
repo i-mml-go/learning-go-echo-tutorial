@@ -9,6 +9,7 @@ import (
 	"toplearn-api/Utility"
 	"toplearn-api/config"
 	"toplearn-api/routing"
+	"toplearn-api/viewModel/common/security"
 )
 
 func RootLevel(next echo.HandlerFunc) echo.HandlerFunc {
@@ -49,6 +50,15 @@ func main() {
 			return next(apiContext)
 		}
 	})
+	server.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningKey:             []byte("our-secret-key-in-golang-project"),
+		Claims:                 &security.JwtClaims{},
+		ContinueOnIgnoredError: true,
+		ErrorHandlerWithContext: func(err error, c echo.Context) error {
+			return nil
+		},
+	}))
+
 	server.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(10)))
 
 	// start server
