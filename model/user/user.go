@@ -11,6 +11,6 @@ type User struct {
 	Password      string    `bson:"password,omitempty"`
 	RegisterData  time.Time `bson:"registerDate,omitempty"`
 	CreatorUserId string    `bson:"CreatorUserId,omitempty"`
-
+	Roles         []string  `bson:"Roles,omitempty"`
 	//PhoneNumber string `query:"phone" json:"mobile"`
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"golang.org/x/exp/slices"
 	"time"
 	"toplearn-api/model/user"
 	"toplearn-api/repository"
@@ -11,6 +12,7 @@ type UserService interface {
 	GetUserList() ([]user.User, error)
 	CreateNewUser(userInput userVm.CreateNewUserViewModel) (string, error)
 	GetUserByUserNameAndPassword(loginViewModel userVm.LoginUserViewModel) (user.User, error)
+	IsUserValidForAccess(userId, roleName string) bool
 }
 
 type userService struct {
@@ -33,7 +35,28 @@ func (userService) GetUserByUserNameAndPassword(loginViewModel userVm.LoginUserV
 
 	return user, err
 }
+func (userService) IsUserValidForAccess(userId, roleName string) bool {
+	userRepository := repository.NewUserRepository()
+	user, err := userRepository.GetUserById(userId)
+	if err != nil {
+		return false
+	}
 
+	if user.Roles == nil {
+		return false
+	}
+
+	if user.Roles == nil {
+		return false
+	}
+	// slice package is for searching in an array
+	roleIndex := slices.IndexFunc(user.Roles, func(role string) bool {
+		// if it's equal then result is true , else is false
+		return role == roleName
+	})
+
+	return roleIndex >= 0
+}
 func (userService) CreateNewUser(userInput userVm.CreateNewUserViewModel) (string, error) {
 
 	userEntity := user.User{
